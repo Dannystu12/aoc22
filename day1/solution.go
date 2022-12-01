@@ -34,3 +34,7 @@ func parseInput(input []string) ([]elfInventory, error) {
 	}
 	return inventory, nil
 }
+
+func getMostCalories([]elfInventory) *int {
+	return nil
+}

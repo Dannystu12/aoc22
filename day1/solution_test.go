@@ -81,3 +81,55 @@ func TestParseInput(t *testing.T) {
 		})
 	}
 }
+
+func TestGetMostCalories(t *testing.T) {
+
+	var tests = []struct {
+		name   string
+		input  []elfInventory
+		result *int
+	}{
+		{
+			name:   "empty list",
+			input:  []elfInventory{},
+			result: nil,
+		},
+		{
+			name:   "nil input",
+			input:  nil,
+			result: nil,
+		},
+		{
+			name:   "one elf one item",
+			input:  []elfInventory{{1000}},
+			result: makeIntPtr(1000),
+		},
+		{
+			name:   "one elf multiple items",
+			input:  []elfInventory{{1000, 2000}},
+			result: makeIntPtr(3000),
+		},
+		{
+			name:   "bigger example",
+			input:  []elfInventory{{1000, 2000, 3000}, {4000}, {5000, 6000}, {7000, 8000, 9000}, {10_000}},
+			result: makeIntPtr(24000),
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result := getMostCalories(test.input)
+			if test.result == nil {
+				assert.Nil(t, result)
+			} else {
+				assert.NotNil(t, result)
+				assert.Equal(t, *test.result, *result)
+			}
+
+		})
+	}
+}
+
+func makeIntPtr(i int) *int {
+	return &i
+}
