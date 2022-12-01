@@ -25,4 +25,11 @@ func main() {
 		log.Println("Max Calories: ", *maxCalories)
 	}
 
+	top3MaxCalories := day1.GetMaxCaloriesTopN(inventories, 3)
+	if top3MaxCalories == nil {
+		log.Println("No top 3 max calories found")
+	} else {
+		log.Println("Top 3 Max Calories: ", *top3MaxCalories)
+	}
+
 }
