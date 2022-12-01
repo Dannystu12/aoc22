@@ -37,7 +37,7 @@ func TestParseInput(t *testing.T) {
 			err:    false,
 		},
 		{
-			name:   "non int input",
+			name:   "non int inventory",
 			input:  []string{"1000", "2000", "", "7000", "foo"},
 			result: nil,
 			err:    true,
@@ -70,7 +70,7 @@ func TestParseInput(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result, err := parseInput(test.input)
+			result, err := ParseInput(test.input)
 			if test.err {
 				assert.Error(t, err)
 				assert.Nil(t, result)
@@ -82,7 +82,7 @@ func TestParseInput(t *testing.T) {
 	}
 }
 
-func TestGetMostCalories(t *testing.T) {
+func TestGetMaxCalories(t *testing.T) {
 
 	var tests = []struct {
 		name   string
@@ -95,7 +95,7 @@ func TestGetMostCalories(t *testing.T) {
 			result: nil,
 		},
 		{
-			name:   "nil input",
+			name:   "nil inventory",
 			input:  nil,
 			result: nil,
 		},
@@ -123,7 +123,7 @@ func TestGetMostCalories(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := getMostCalories(test.input)
+			result := GetMaxCalories(test.input)
 			if test.result == nil {
 				assert.Nil(t, result)
 			} else {
@@ -131,6 +131,77 @@ func TestGetMostCalories(t *testing.T) {
 				assert.Equal(t, *test.result, *result)
 			}
 
+		})
+	}
+}
+
+func TestGetMaxCaloriesTopN(t *testing.T) {
+
+	var tests = []struct {
+		name      string
+		inventory []elfInventory
+		n         uint
+		result    *int
+	}{
+		{
+			name:      "empty list",
+			inventory: []elfInventory{},
+			n:         3,
+			result:    nil,
+		},
+		{
+			name:      "nil inventory",
+			inventory: nil,
+			n:         3,
+			result:    nil,
+		},
+		{
+			name:      "one elf one item top 1",
+			inventory: []elfInventory{{1000}},
+			n:         1,
+			result:    makeIntPtr(1000),
+		},
+		{
+			name:      "one elf one item top 3",
+			inventory: []elfInventory{{1000}},
+			n:         3,
+			result:    makeIntPtr(1000),
+		},
+		{
+			name:      "top 0",
+			inventory: []elfInventory{{1000}},
+			n:         0,
+			result:    nil,
+		},
+		{
+			name:      "one elf multiple items",
+			inventory: []elfInventory{{1000, 2000}},
+			n:         3,
+			result:    makeIntPtr(3000),
+		},
+		{
+			name:      "nil elf",
+			inventory: []elfInventory{{1000, 2000}, nil, {3000, 5000}},
+			n:         3,
+			result:    makeIntPtr(11000),
+		},
+		{
+			name:      "bigger example",
+			inventory: []elfInventory{{1000, 2000, 3000}, {4000}, {5000, 6000}, {7000, 8000, 9000}, {10_000}},
+			n:         3,
+			result:    makeIntPtr(45000),
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result := GetMaxCaloriesTopN(test.inventory, test.n)
+			if test.result == nil {
+				assert.Nil(t, result)
+			} else {
+				assert.NotNil(t, result)
+				assert.Equal(t, *test.result, *result)
+			}
 		})
 	}
 }

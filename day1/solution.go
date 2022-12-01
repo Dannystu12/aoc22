@@ -8,7 +8,7 @@ import (
 
 type elfInventory []int
 
-func parseInput(input []string) ([]elfInventory, error) {
+func ParseInput(input []string) ([]elfInventory, error) {
 	inventory := make([]elfInventory, 0)
 
 	currentElf := make(elfInventory, 0)
@@ -35,26 +35,62 @@ func parseInput(input []string) ([]elfInventory, error) {
 	return inventory, nil
 }
 
-func getMostCalories(inventory []elfInventory) *int {
-	if inventory == nil || len(inventory) == 0 {
+func GetMaxCalories(inventory []elfInventory) *int {
+	_, max := getMaxCalories(inventory)
+	return max
+}
+
+func GetMaxCaloriesTopN(inventory []elfInventory, topN uint) *int {
+
+	if inventory == nil || len(inventory) == 0 || topN == 0 {
 		return nil
 	}
 
+	invCpy := make([]elfInventory, len(inventory))
+	copy(invCpy, inventory)
+
+	var total *int
+	var i uint
+	for i = 0; i < topN; i++ {
+		idx, max := getMaxCalories(invCpy)
+		if max == nil {
+			break
+		}
+
+		if total == nil {
+			total = max
+		} else {
+			*total += *max
+		}
+
+		invCpy = append(invCpy[:*idx], invCpy[*idx+1:]...)
+	}
+
+	return total
+}
+
+func getMaxCalories(inventory []elfInventory) (*int, *int) {
+	if inventory == nil || len(inventory) == 0 {
+		return nil, nil
+	}
+
 	var mostCalories *int
-	for _, elfInventory := range inventory {
+	var idx *int
+	for i, elfInventory := range inventory {
 		if elfInventory == nil {
 			continue
 		}
 
 		elfCalories := 0
+		elfIdx := i
 		for _, item := range elfInventory {
 			elfCalories += item
-
 		}
 		if mostCalories == nil || elfCalories > *mostCalories {
 			mostCalories = &elfCalories
+			idx = &elfIdx
 		}
 	}
 
-	return mostCalories
+	return idx, mostCalories
 }
