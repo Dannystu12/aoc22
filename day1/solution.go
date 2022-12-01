@@ -35,6 +35,26 @@ func parseInput(input []string) ([]elfInventory, error) {
 	return inventory, nil
 }
 
-func getMostCalories([]elfInventory) *int {
-	return nil
+func getMostCalories(inventory []elfInventory) *int {
+	if inventory == nil || len(inventory) == 0 {
+		return nil
+	}
+
+	var mostCalories *int
+	for _, elfInventory := range inventory {
+		if elfInventory == nil {
+			continue
+		}
+
+		elfCalories := 0
+		for _, item := range elfInventory {
+			elfCalories += item
+
+		}
+		if mostCalories == nil || elfCalories > *mostCalories {
+			mostCalories = &elfCalories
+		}
+	}
+
+	return mostCalories
 }

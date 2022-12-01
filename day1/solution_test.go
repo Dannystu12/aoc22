@@ -110,6 +110,11 @@ func TestGetMostCalories(t *testing.T) {
 			result: makeIntPtr(3000),
 		},
 		{
+			name:   "nil elf",
+			input:  []elfInventory{{1000, 2000}, nil, {3000, 5000}},
+			result: makeIntPtr(8000),
+		},
+		{
 			name:   "bigger example",
 			input:  []elfInventory{{1000, 2000, 3000}, {4000}, {5000, 6000}, {7000, 8000, 9000}, {10_000}},
 			result: makeIntPtr(24000),
