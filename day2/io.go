@@ -5,20 +5,6 @@ import (
 	"strings"
 )
 
-type move string
-
-const (
-	Rock     move = "Rock"
-	Scissors move = "Scissors"
-	Paper    move = "Paper"
-	INVALID  move = "Invalid"
-)
-
-type Game struct {
-	MyMove        move
-	OpponentsMove move
-}
-
 func ParseInput(input []string) ([]Game, error) {
 
 	games := make([]Game, 0)
@@ -57,35 +43,35 @@ func ParseInput(input []string) ([]Game, error) {
 func stringToPlayerMove(s string) (move, error) {
 	s_ := strings.TrimSpace(strings.ToLower(s))
 	if len(s_) != 1 {
-		return INVALID, fmt.Errorf("player move must be one of [X,Y,Z], given %s", s)
+		return INVALID_MOVE, fmt.Errorf("player move must be one of [X,Y,Z], given %s", s)
 	}
 
 	switch s_ {
 	case "x":
-		return Rock, nil
+		return ROCK, nil
 	case "y":
-		return Paper, nil
+		return PAPER, nil
 	case "z":
-		return Scissors, nil
+		return SCISSORS, nil
 	default:
-		return INVALID, fmt.Errorf("opponent move must be one of [X,Y,Z], given %s", s)
+		return INVALID_MOVE, fmt.Errorf("opponent move must be one of [X,Y,Z], given %s", s)
 	}
 }
 
 func stringToOpponentMove(s string) (move, error) {
 	s_ := strings.TrimSpace(strings.ToLower(s))
 	if len(s_) != 1 {
-		return INVALID, fmt.Errorf("opponent move must be one of [A,B,C], given %s", s)
+		return INVALID_MOVE, fmt.Errorf("opponent move must be one of [A,B,C], given %s", s)
 	}
 
 	switch s_ {
 	case "a":
-		return Rock, nil
+		return ROCK, nil
 	case "b":
-		return Paper, nil
+		return PAPER, nil
 	case "c":
-		return Scissors, nil
+		return SCISSORS, nil
 	default:
-		return INVALID, fmt.Errorf("opponent move must be one of [A,B,C], given %s", s)
+		return INVALID_MOVE, fmt.Errorf("opponent move must be one of [A,B,C], given %s", s)
 	}
 }
