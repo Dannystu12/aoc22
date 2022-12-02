@@ -21,6 +21,14 @@ func main() {
 	}
 
 	score := games.GetTotalScore()
-	fmt.Printf("The total score is: %d\n", score)
+	fmt.Printf("The total score in part 1 is: %d\n", score)
+
+	games, err = day2.ParseInput2(lines)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	score = games.GetTotalScore()
+	fmt.Printf("The total score in part 2 is: %d\n", score)
 
 }

@@ -89,3 +89,71 @@ func TestMoveValidate(t *testing.T) {
 		})
 	}
 }
+
+func TestBeatenBy(t *testing.T) {
+	for _, test := range []struct {
+		name     string
+		input    move
+		expected move
+	}{
+		{
+			name:     "Paper beats rock",
+			input:    ROCK,
+			expected: PAPER,
+		},
+		{
+			name:     "Rock beats scissors",
+			input:    SCISSORS,
+			expected: ROCK,
+		},
+		{
+			name:     "Scissors beats paper",
+			input:    PAPER,
+			expected: SCISSORS,
+		},
+		{
+			name:     "invalid",
+			input:    INVALID_MOVE,
+			expected: INVALID_MOVE,
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			result := test.input.BeatenBy()
+			assert.Equal(t, test.expected, result)
+		})
+	}
+}
+
+func TestBeats(t *testing.T) {
+	for _, test := range []struct {
+		name     string
+		input    move
+		expected move
+	}{
+		{
+			name:     "Paper beats rock",
+			input:    PAPER,
+			expected: ROCK,
+		},
+		{
+			name:     "Rock beats scissors",
+			input:    ROCK,
+			expected: SCISSORS,
+		},
+		{
+			name:     "Scissors beats paper",
+			input:    SCISSORS,
+			expected: PAPER,
+		},
+		{
+			name:     "invalid",
+			input:    INVALID_MOVE,
+			expected: INVALID_MOVE,
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			result := test.input.Beats()
+			assert.Equal(t, test.expected, result)
+		})
+	}
+}

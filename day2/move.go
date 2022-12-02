@@ -34,3 +34,29 @@ func (m move) Validate() (move, bool) {
 		return INVALID_MOVE, false
 	}
 }
+
+func (m move) BeatenBy() move {
+	switch m {
+	case ROCK:
+		return PAPER
+	case PAPER:
+		return SCISSORS
+	case SCISSORS:
+		return ROCK
+	default:
+		return INVALID_MOVE
+	}
+}
+
+func (m move) Beats() move {
+	switch m {
+	case ROCK:
+		return SCISSORS
+	case PAPER:
+		return ROCK
+	case SCISSORS:
+		return PAPER
+	default:
+		return INVALID_MOVE
+	}
+}

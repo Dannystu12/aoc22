@@ -33,15 +33,15 @@ func (game *Game) GetResult() result {
 
 	switch playerMove {
 	case ROCK:
-		if opponentsMove == SCISSORS {
+		if opponentsMove == ROCK.Beats() {
 			return WIN
 		}
 	case PAPER:
-		if opponentsMove == ROCK {
+		if opponentsMove == PAPER.Beats() {
 			return WIN
 		}
 	case SCISSORS:
-		if opponentsMove == PAPER {
+		if opponentsMove == SCISSORS.Beats() {
 			return WIN
 		}
 	}
