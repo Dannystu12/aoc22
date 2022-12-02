@@ -5,6 +5,27 @@ import (
 	"testing"
 )
 
+func TestGetTotalScores(t *testing.T) {
+	games := Games{
+		{
+			MyMove:        PAPER,
+			OpponentsMove: ROCK,
+		},
+		{
+			MyMove:        ROCK,
+			OpponentsMove: PAPER,
+		},
+		{
+			MyMove:        SCISSORS,
+			OpponentsMove: SCISSORS,
+		},
+	}
+
+	expectedScore := 15
+	actualScore := games.GetTotalScore()
+	assert.Equal(t, expectedScore, actualScore)
+}
+
 func TestGetResult(t *testing.T) {
 	for _, test := range []struct {
 		name   string

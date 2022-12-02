@@ -1,5 +1,15 @@
 package day2
 
+type Games []Game
+
+func (g Games) GetTotalScore() int {
+	total := 0
+	for _, game := range g {
+		total += game.GetScore()
+	}
+	return total
+}
+
 type Game struct {
 	MyMove        move
 	OpponentsMove move
