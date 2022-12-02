@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func ParseInput(input []string) ([]Game, error) {
+func ParseInput(input []string) (Games, error) {
 
 	games := make([]Game, 0)
 

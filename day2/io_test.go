@@ -9,7 +9,7 @@ func TestParseInput(t *testing.T) {
 	for _, test := range []struct {
 		name   string
 		input  []string
-		result []Game
+		result Games
 		err    bool
 	}{
 		{
