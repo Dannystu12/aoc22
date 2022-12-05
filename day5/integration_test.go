@@ -21,10 +21,21 @@ move 1 from 1 to 2`
 	assert.NoError(t, err)
 
 	for _, m := range moves {
-		err = cargo.PerformMove(m)
+		err = cargo.PerformMove(m, false)
 		assert.NoError(t, err)
 	}
 
 	message := cargo.GetMessage()
 	assert.Equal(t, "CMZ", message)
+
+	cargo, moves, err = ParseInput(input)
+	assert.NoError(t, err)
+
+	for _, m := range moves {
+		err = cargo.PerformMove(m, true)
+		assert.NoError(t, err)
+	}
+
+	message = cargo.GetMessage()
+	assert.Equal(t, "MCD", message)
 }

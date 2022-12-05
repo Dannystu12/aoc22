@@ -172,7 +172,7 @@ func TestPerformMove(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			err := test.cargo.PerformMove(test.move)
+			err := test.cargo.PerformMove(test.move, false)
 			if test.err {
 				assert.Error(t, err)
 			} else {
@@ -181,6 +181,29 @@ func TestPerformMove(t *testing.T) {
 			assert.Equal(t, test.endState, test.cargo)
 		})
 	}
+
+	t.Run("preserved order", func(t *testing.T) {
+
+		c := cargo{
+			1: []byte{'Z', 'N'},
+			2: []byte{'M', 'C', 'D'},
+			3: []byte{'P'},
+		}
+		m := move{
+			number: 3,
+			from:   2,
+			to:     1,
+		}
+		endState := cargo{
+			1: []byte{'Z', 'N', 'M', 'C', 'D'},
+			2: []byte{},
+			3: []byte{'P'},
+		}
+		err := c.PerformMove(m, true)
+		assert.NoError(t, err)
+		assert.Equal(t, c, endState)
+
+	})
 }
 
 func TestGetMessage(t *testing.T) {

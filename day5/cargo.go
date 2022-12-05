@@ -8,7 +8,7 @@ import (
 
 type cargo map[uint][]byte
 
-func (c cargo) PerformMove(m move) error {
+func (c cargo) PerformMove(m move, preserveOrder bool) error {
 
 	fromBay, ok := c[m.from]
 	if !ok {
@@ -29,9 +29,11 @@ func (c cargo) PerformMove(m move) error {
 	}
 
 	moveCrates := fromBay[len(fromBay)-int(m.number):]
-	sort.SliceStable(moveCrates, func(i, j int) bool {
-		return i > j
-	})
+	if !preserveOrder {
+		sort.SliceStable(moveCrates, func(i, j int) bool {
+			return i > j
+		})
+	}
 	c[m.to] = append(c[m.to], moveCrates...)
 	c[m.from] = fromBay[:len(fromBay)-int(m.number)]
 
