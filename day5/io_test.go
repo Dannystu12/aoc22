@@ -152,6 +152,14 @@ func TestParseCargo(t *testing.T) {
 			err: false,
 		},
 		{
+			name: "bay rows must be ordered",
+			input: []string{
+				" 1   2   1 ",
+			},
+			result: nil,
+			err:    true,
+		},
+		{
 			name: "bays must be 1-9",
 			input: []string{
 				" 1   2   10 ",
@@ -222,6 +230,36 @@ func TestParseCargo(t *testing.T) {
 				"[N] [C]    ",
 				"[Z] [M] [P]",
 				" 1   2   3 ",
+			},
+			result: cargo{
+				1: []byte{'Z', 'N'},
+				2: []byte{'M', 'C', 'D'},
+				3: []byte{'P'},
+			},
+			err: false,
+		},
+		{
+			name: "works with cargo row one less than bay row",
+			input: []string{
+				"    [D]    ",
+				"[N] [C]    ",
+				"[Z] [M] [P]",
+				" 1   2   3",
+			},
+			result: cargo{
+				1: []byte{'Z', 'N'},
+				2: []byte{'M', 'C', 'D'},
+				3: []byte{'P'},
+			},
+			err: false,
+		},
+		{
+			name: "pads cargo rows",
+			input: []string{
+				"    [D]",
+				"[N] [C]",
+				"[Z] [M] [P]",
+				" 1   2   3",
 			},
 			result: cargo{
 				1: []byte{'Z', 'N'},

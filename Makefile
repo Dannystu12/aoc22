@@ -1,4 +1,4 @@
-.PHONY: test day1 day2 day3 day4
+.PHONY: test day1 day2 day3 day4 day5
 
 test:
 	go test -coverprofile=cover.out ./...
@@ -14,3 +14,6 @@ day3:
 
 day4:
 	go run cmd/day4/*.go
+
+day5:
+	go run cmd/day5/*.go

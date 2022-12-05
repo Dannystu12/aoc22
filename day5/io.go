@@ -7,10 +7,28 @@ import (
 	"strings"
 )
 
-//
-//func ParseInput([]string) (cargo, []move, error) {
-//	return nil, nil, nil
-//}
+func ParseInput(input string) (cargo, []move, error) {
+	re := regexp.MustCompile(`(?m)\n^\s?$\n`)
+	sections := re.Split(input, 2)
+
+	if len(sections) != 2 {
+		return nil, nil, fmt.Errorf("sections should be seperated by a blank line")
+	}
+
+	cargoRows := strings.Split(sections[0], "\n")
+	cargo, err := parseCargo(cargoRows)
+	if err != nil {
+		return nil, nil, fmt.Errorf("could not parse cargo: %w", err)
+	}
+
+	moveRows := strings.Split(sections[1], "\n")
+	moves, err := parseMoves(moveRows)
+	if err != nil {
+		return nil, nil, fmt.Errorf("could not parse moves: %w", err)
+	}
+
+	return cargo, moves, nil
+}
 
 func parseMoves(rows []string) ([]move, error) {
 	moves := make([]move, 0, len(rows))
@@ -74,8 +92,8 @@ func parseCargo(rows []string) (cargo, error) {
 
 	for i := len(rows) - 2; i >= 0; i-- {
 		cargoRow := rows[i]
-		if len(cargoRow) != len(baysRow) {
-			return nil, fmt.Errorf("cargo row %d is not the same length as bays row %d", len(cargoRow), len(baysRow))
+		if len(cargoRow) > len(baysRow)+1 {
+			return nil, fmt.Errorf("cargo row %d is too big, bay row is %d", len(cargoRow), len(baysRow))
 		}
 
 		spltRow := strings.Fields(cargoRow)
@@ -118,6 +136,7 @@ func parseBay(baysRow string) (map[uint]bool, error) {
 	rawBays := strings.Fields(baysRow)
 
 	result := make(map[uint]bool, 0)
+	maxBay := uint(0)
 	for _, rawBay := range rawBays {
 		bay, err := strconv.ParseUint(rawBay, 10, 32)
 		if err != nil {
@@ -134,6 +153,10 @@ func parseBay(baysRow string) (map[uint]bool, error) {
 			return nil, fmt.Errorf("bay numbers must be between 1 and 9 (inclusive), give %d", parsedBay)
 		}
 
+		if parsedBay <= maxBay {
+			return nil, fmt.Errorf("bays must be in numerical order")
+		}
+		maxBay = parsedBay
 		result[parsedBay] = true
 	}
 
