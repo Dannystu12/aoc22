@@ -14,16 +14,6 @@ func TestSignalIsValid(t *testing.T) {
 		{
 			name:   "empty Signal",
 			signal: Signal(""),
-			valid:  false,
-		},
-		{
-			name:   "too short",
-			signal: Signal("abc"),
-			valid:  false,
-		},
-		{
-			name:   "right size",
-			signal: Signal("abcd"),
 			valid:  true,
 		},
 		{
@@ -66,7 +56,7 @@ func TestSignalIsValid(t *testing.T) {
 	}
 }
 
-func TestSignalGetMarker(t *testing.T) {
+func TestSignalGetStartOfPacketMarker(t *testing.T) {
 	var tests = []struct {
 		name   string
 		signal Signal
@@ -131,7 +121,86 @@ func TestSignalGetMarker(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			marker, ok := test.signal.GetMarker()
+			marker, ok := test.signal.GetStartOfPacketMarker()
+			assert.Equal(t, test.marker, marker)
+			assert.Equal(t, test.ok, ok)
+		})
+	}
+
+}
+
+func TestSignalGetStartOfMessageMarker(t *testing.T) {
+	var tests = []struct {
+		name   string
+		signal Signal
+		marker int
+		ok     bool
+	}{
+		{
+			name:   "empty Signal",
+			signal: Signal(""),
+			marker: 0,
+			ok:     false,
+		},
+		{
+			name:   "invalid Signal",
+			signal: Signal("jkljkljkl;jklj lkjkljK\t"),
+			marker: 0,
+			ok:     false,
+		},
+		{
+			name:   "valid Signal 1",
+			signal: Signal("bvwbjplbgvbhsrlpgdmjqwftvncz"),
+			marker: 23,
+			ok:     true,
+		},
+		{
+			name:   "valid Signal 2",
+			signal: Signal("nppdvjthqldpwncqszvftbrmjlhg"),
+			marker: 23,
+			ok:     true,
+		},
+		{
+			name:   "valid Signal 3",
+			signal: Signal("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"),
+			marker: 29,
+			ok:     true,
+		},
+		{
+			name:   "valid Signal 4",
+			signal: Signal("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"),
+			marker: 26,
+			ok:     true,
+		},
+		{
+			name:   "valid Signal 5",
+			signal: Signal("mjqjpqmgbljsphdztnvjfqwrcgsmlb"),
+			marker: 19,
+			ok:     true,
+		},
+		{
+			name:   "too short",
+			signal: Signal("abcdefghijklm"),
+			marker: 0,
+			ok:     false,
+		},
+		{
+			name:   "min valid",
+			signal: Signal("abcdefghijklmn"),
+			marker: 14,
+			ok:     true,
+		},
+		{
+			name:   "long invalid",
+			signal: Signal("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"),
+			marker: 0,
+			ok:     false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			marker, ok := test.signal.GetStartOfMessageMarker()
 			assert.Equal(t, test.marker, marker)
 			assert.Equal(t, test.ok, ok)
 		})
