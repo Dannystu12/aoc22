@@ -6,6 +6,7 @@ import (
 )
 
 func TestMoveToScore(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name  string
 		input move
@@ -37,7 +38,9 @@ func TestMoveToScore(t *testing.T) {
 			score: 0,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result := test.input.toScore()
 			assert.Equal(t, test.score, result)
 		})
@@ -45,6 +48,7 @@ func TestMoveToScore(t *testing.T) {
 }
 
 func TestMoveValidate(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name     string
 		input    move
@@ -82,7 +86,9 @@ func TestMoveValidate(t *testing.T) {
 			ok:       false,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result, ok := test.input.Validate()
 			assert.Equal(t, test.expected, result)
 			assert.Equal(t, test.ok, ok)
@@ -91,6 +97,7 @@ func TestMoveValidate(t *testing.T) {
 }
 
 func TestBeatenBy(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name     string
 		input    move
@@ -117,7 +124,9 @@ func TestBeatenBy(t *testing.T) {
 			expected: INVALID_MOVE,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result := test.input.BeatenBy()
 			assert.Equal(t, test.expected, result)
 		})
@@ -125,6 +134,7 @@ func TestBeatenBy(t *testing.T) {
 }
 
 func TestBeats(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name     string
 		input    move
@@ -151,7 +161,9 @@ func TestBeats(t *testing.T) {
 			expected: INVALID_MOVE,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result := test.input.Beats()
 			assert.Equal(t, test.expected, result)
 		})

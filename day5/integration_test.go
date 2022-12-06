@@ -6,6 +6,7 @@ import (
 )
 
 func TestIntegration(t *testing.T) {
+	t.Parallel()
 	input :=
 		`    [D]    
 [N] [C]    

@@ -6,6 +6,7 @@ import (
 )
 
 func TestParseInput(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name   string
 		input  []string
@@ -70,7 +71,9 @@ func TestParseInput(t *testing.T) {
 			err: false,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result, err := ParseInput(test.input)
 			if test.err {
 				assert.Error(t, err)
@@ -89,6 +92,7 @@ func TestParseInput(t *testing.T) {
 }
 
 func TestStringToPlayerMove(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name   string
 		input  string
@@ -144,7 +148,9 @@ func TestStringToPlayerMove(t *testing.T) {
 			err:    true,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result, err := stringToPlayerMove(test.input)
 			if test.err {
 				assert.Error(t, err)
@@ -157,6 +163,7 @@ func TestStringToPlayerMove(t *testing.T) {
 }
 
 func TestStringToOpponentMove(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name   string
 		input  string
@@ -212,7 +219,9 @@ func TestStringToOpponentMove(t *testing.T) {
 			err:    true,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result, err := stringToOpponentMove(test.input)
 			if test.err {
 				assert.Error(t, err)

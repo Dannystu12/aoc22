@@ -6,6 +6,7 @@ import (
 )
 
 func TestIntegration(t *testing.T) {
+	t.Parallel()
 	input := []string{
 		"2-4,6-8",
 		"2-3,4-5",
@@ -18,6 +19,7 @@ func TestIntegration(t *testing.T) {
 	assert.NoError(t, err)
 
 	t.Run("fully contains", func(t *testing.T) {
+		t.Parallel()
 		expected := 2
 		count := 0
 		for _, pair := range pairs {
@@ -30,6 +32,7 @@ func TestIntegration(t *testing.T) {
 	})
 
 	t.Run("any overlap", func(t *testing.T) {
+		t.Parallel()
 		expected := 4
 		count := 0
 		for _, pair := range pairs {

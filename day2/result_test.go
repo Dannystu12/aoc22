@@ -6,6 +6,7 @@ import (
 )
 
 func TestResultToScore(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name  string
 		input result
@@ -32,7 +33,9 @@ func TestResultToScore(t *testing.T) {
 			score: 0,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result := test.input.toScore()
 			assert.Equal(t, test.score, result)
 		})
@@ -40,6 +43,7 @@ func TestResultToScore(t *testing.T) {
 }
 
 func TestResultValidate(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name     string
 		input    result
@@ -77,7 +81,9 @@ func TestResultValidate(t *testing.T) {
 			ok:       false,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result, ok := test.input.Validate()
 			assert.Equal(t, test.expected, result)
 			assert.Equal(t, test.ok, ok)

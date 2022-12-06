@@ -6,6 +6,7 @@ import (
 )
 
 func TestGetDuplicate(t *testing.T) {
+	t.Parallel()
 	var tests = []struct {
 		name   string
 		input  rucksack
@@ -148,7 +149,9 @@ func TestGetDuplicate(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result, err := test.input.GetDuplicate()
 			if test.err {
 				assert.Error(t, err)
@@ -162,6 +165,7 @@ func TestGetDuplicate(t *testing.T) {
 }
 
 func TestGetPriorityScore(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name     string
 		input    byte
@@ -219,7 +223,9 @@ func TestGetPriorityScore(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result, err := GetPriorityScore(test.input)
 			if test.err {
 				assert.Error(t, err)
@@ -233,6 +239,7 @@ func TestGetPriorityScore(t *testing.T) {
 }
 
 func TestGetAll(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name     string
 		input    rucksack
@@ -287,7 +294,9 @@ func TestGetAll(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result := test.input.GetAll()
 			assert.Equal(t, test.expected, result)
 		})

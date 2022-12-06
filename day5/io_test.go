@@ -6,6 +6,7 @@ import (
 )
 
 func TestParseMoves(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name   string
 		input  []string
@@ -119,7 +120,9 @@ func TestParseMoves(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			moves, err := parseMoves(test.input)
 			if test.err {
 				assert.Error(t, err)
@@ -133,6 +136,7 @@ func TestParseMoves(t *testing.T) {
 }
 
 func TestParseCargo(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name   string
 		input  []string
@@ -341,7 +345,9 @@ func TestParseCargo(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			cargo, err := parseCargo(test.input)
 			if test.err {
 				assert.Error(t, err)

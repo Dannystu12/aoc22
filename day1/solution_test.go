@@ -6,6 +6,7 @@ import (
 )
 
 func TestParseInput(t *testing.T) {
+	t.Parallel()
 	var tests = []struct {
 		name   string
 		input  []string
@@ -69,7 +70,9 @@ func TestParseInput(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result, err := ParseInput(test.input)
 			if test.err {
 				assert.Error(t, err)
@@ -83,7 +86,7 @@ func TestParseInput(t *testing.T) {
 }
 
 func TestGetMaxCalories(t *testing.T) {
-
+	t.Parallel()
 	var tests = []struct {
 		name   string
 		input  []elfInventory
@@ -122,7 +125,9 @@ func TestGetMaxCalories(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result := GetMaxCalories(test.input)
 			if test.result == nil {
 				assert.Nil(t, result)
@@ -136,7 +141,7 @@ func TestGetMaxCalories(t *testing.T) {
 }
 
 func TestGetMaxCaloriesTopN(t *testing.T) {
-
+	t.Parallel()
 	var tests = []struct {
 		name      string
 		inventory []elfInventory
@@ -194,7 +199,9 @@ func TestGetMaxCaloriesTopN(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result := GetMaxCaloriesTopN(test.inventory, test.n)
 			if test.result == nil {
 				assert.Nil(t, result)

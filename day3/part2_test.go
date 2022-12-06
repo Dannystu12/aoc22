@@ -6,6 +6,7 @@ import (
 )
 
 func TestParseInput2(t *testing.T) {
+	t.Parallel()
 	var tests = []struct {
 		name   string
 		input  []string
@@ -87,7 +88,9 @@ func TestParseInput2(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result, err := ParseInput2(test.input)
 			if test.err {
 				assert.Error(t, err)
@@ -102,6 +105,7 @@ func TestParseInput2(t *testing.T) {
 }
 
 func TestGetDuplicateRucksackGroups(t *testing.T) {
+	t.Parallel()
 
 	input := []string{
 		"vJrwpWtwJgWrhcsFMMfFFhFp",

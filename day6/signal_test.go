@@ -6,6 +6,7 @@ import (
 )
 
 func TestSignalIsValid(t *testing.T) {
+	t.Parallel()
 	var tests = []struct {
 		name   string
 		signal Signal
@@ -49,7 +50,9 @@ func TestSignalIsValid(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			ok := test.signal.IsValid()
 			assert.Equal(t, test.valid, ok)
 		})
@@ -57,6 +60,7 @@ func TestSignalIsValid(t *testing.T) {
 }
 
 func TestSignalGetStartOfPacketMarker(t *testing.T) {
+	t.Parallel()
 	var tests = []struct {
 		name   string
 		signal Signal
@@ -120,7 +124,9 @@ func TestSignalGetStartOfPacketMarker(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			marker, ok := test.signal.GetStartOfPacketMarker()
 			assert.Equal(t, test.marker, marker)
 			assert.Equal(t, test.ok, ok)
@@ -130,6 +136,7 @@ func TestSignalGetStartOfPacketMarker(t *testing.T) {
 }
 
 func TestSignalGetStartOfMessageMarker(t *testing.T) {
+	t.Parallel()
 	var tests = []struct {
 		name   string
 		signal Signal
@@ -199,7 +206,9 @@ func TestSignalGetStartOfMessageMarker(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			marker, ok := test.signal.GetStartOfMessageMarker()
 			assert.Equal(t, test.marker, marker)
 			assert.Equal(t, test.ok, ok)

@@ -6,6 +6,7 @@ import (
 )
 
 func TestGetTotalScores(t *testing.T) {
+	t.Parallel()
 	games := Games{
 		{
 			MyMove:        PAPER,
@@ -27,6 +28,7 @@ func TestGetTotalScores(t *testing.T) {
 }
 
 func TestGetResult(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name   string
 		input  Game
@@ -121,7 +123,9 @@ func TestGetResult(t *testing.T) {
 			output: INVALID_RESULT,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result := test.input.GetResult()
 			assert.Equal(t, test.output, result)
 		})
@@ -129,6 +133,7 @@ func TestGetResult(t *testing.T) {
 }
 
 func TestGetScore(t *testing.T) {
+	t.Parallel()
 	for _, test := range []struct {
 		name   string
 		input  Game
@@ -223,7 +228,9 @@ func TestGetScore(t *testing.T) {
 			output: 0,
 		},
 	} {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			result := test.input.GetScore()
 			assert.Equal(t, test.output, result)
 		})

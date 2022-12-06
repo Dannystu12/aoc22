@@ -6,6 +6,7 @@ import (
 )
 
 func TestPerformMove(t *testing.T) {
+	t.Parallel()
 	var tests = []struct {
 		name     string
 		cargo    cargo
@@ -171,7 +172,9 @@ func TestPerformMove(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			err := test.cargo.PerformMove(test.move, false)
 			if test.err {
 				assert.Error(t, err)
@@ -183,6 +186,7 @@ func TestPerformMove(t *testing.T) {
 	}
 
 	t.Run("preserved order", func(t *testing.T) {
+		t.Parallel()
 
 		c := cargo{
 			1: []byte{'Z', 'N'},
@@ -207,6 +211,7 @@ func TestPerformMove(t *testing.T) {
 }
 
 func TestGetMessage(t *testing.T) {
+	t.Parallel()
 	var tests = []struct {
 		name    string
 		cargo   cargo
@@ -236,7 +241,9 @@ func TestGetMessage(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			message := test.cargo.GetMessage()
 			assert.Equal(t, test.message, message)
 		})

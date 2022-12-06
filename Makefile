@@ -1,7 +1,7 @@
 .PHONY: test day1 day2 day3 day4 day5 day6
 
 test:
-	go test -coverprofile=cover.out ./...
+	go test -coverprofile=cover.out -covermode=atomic ./...
 
 day1:
 	go run cmd/day1/*.go
