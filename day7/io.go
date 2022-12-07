@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-func ParseInput(lines []string) (*simpleFS, error) {
-	simpleFS := newSimpleFS()
+func ParseInput(lines []string, capacity uint) (*simpleFS, error) {
+	simpleFS := newSimpleFS(capacity)
 
 	isListingFiles := false
 

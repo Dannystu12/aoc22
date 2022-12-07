@@ -36,8 +36,9 @@ var exampleFSEntryMap = fsEntryMap{
 
 func TestNewSimpleFS(t *testing.T) {
 	t.Parallel()
-	fs := newSimpleFS()
+	fs := newSimpleFS(4000)
 	expected := simpleFS{
+		capacity:        4000,
 		entries:         make(fsEntryMap),
 		currentLocation: []dirName{},
 	}
@@ -132,6 +133,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 		{
 			"add file",
 			simpleFS{
+				capacity:        100000,
 				entries:         fsEntryMap{},
 				currentLocation: []dirName{},
 			},
@@ -140,6 +142,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 				100,
 			},
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &file{
 					"test",
 					100,
@@ -151,11 +154,13 @@ func TestSimpleFS_addEntry(t *testing.T) {
 		{
 			"nil entry",
 			simpleFS{
+				capacity:        100000,
 				entries:         fsEntryMap{},
 				currentLocation: []dirName{},
 			},
 			nil,
 			simpleFS{
+				capacity:        100000,
 				entries:         fsEntryMap{},
 				currentLocation: []dirName{},
 			},
@@ -164,6 +169,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 		{
 			"cant add duplicate file",
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &file{
 					"test",
 					100,
@@ -175,6 +181,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 				123,
 			},
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &file{
 					"test",
 					100,
@@ -186,6 +193,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 		{
 			"add directory",
 			simpleFS{
+				capacity:        100000,
 				entries:         fsEntryMap{},
 				currentLocation: []dirName{},
 			},
@@ -199,6 +207,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 				},
 			},
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"testdir": &dir{
 					"testdir",
 					fsEntryMap{
@@ -214,6 +223,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 		{
 			"cant add dir if file name is same",
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &file{
 					"test",
 					100,
@@ -225,6 +235,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 				fsEntryMap{},
 			},
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &file{
 					"test",
 					100,
@@ -236,6 +247,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 		{
 			"cant add file if dir name is same",
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &dir{
 					"test",
 					fsEntryMap{},
@@ -247,6 +259,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 				100,
 			},
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &dir{
 					"test",
 					fsEntryMap{},
@@ -256,8 +269,62 @@ func TestSimpleFS_addEntry(t *testing.T) {
 			true,
 		},
 		{
+			"cant add file if it would be over capacity",
+			simpleFS{
+				capacity: 99,
+				entries: fsEntryMap{"test": &dir{
+					"test",
+					fsEntryMap{},
+				}},
+				currentLocation: []dirName{},
+			},
+			&file{
+				"testfile",
+				100,
+			},
+			simpleFS{
+				capacity: 99,
+				entries: fsEntryMap{"test": &dir{
+					"test",
+					fsEntryMap{},
+				}},
+				currentLocation: []dirName{},
+			},
+			true,
+		},
+		{
+			"can add file to capacity",
+			simpleFS{
+				capacity: 99,
+				entries: fsEntryMap{"test": &dir{
+					"test",
+					fsEntryMap{},
+				}},
+				currentLocation: []dirName{"test"},
+			},
+			&file{
+				"testfile",
+				99,
+			},
+			simpleFS{
+				capacity: 99,
+				entries: fsEntryMap{"test": &dir{
+					"test",
+					fsEntryMap{
+						"testfile": &file{
+							"testfile",
+							99,
+						},
+					},
+				}},
+				currentLocation: []dirName{"test"},
+			},
+			false,
+		},
+		{
 			"can add file to sub directory",
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &dir{
 					"test",
 					fsEntryMap{},
@@ -269,6 +336,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 				100,
 			},
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &dir{
 					"test",
 					fsEntryMap{"test": &file{
@@ -283,6 +351,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 		{
 			"error on invalid current location",
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &dir{
 					"test",
 					fsEntryMap{},
@@ -294,6 +363,7 @@ func TestSimpleFS_addEntry(t *testing.T) {
 				100,
 			},
 			simpleFS{
+				capacity: 100000,
 				entries: fsEntryMap{"test": &dir{
 					"test",
 					fsEntryMap{},
@@ -417,10 +487,148 @@ func TestSimpleFS_cd(t *testing.T) {
 }
 
 func TestSimpleFS_traverse(t *testing.T) {
+	t.Parallel()
 	count := 0
 	exampleFSEntryMap.traverse(func(key FsEntryKey, entry FsEntry) {
 		count++
 	})
 
 	assert.Equal(t, 6, count)
+}
+
+func TestSimpleFS_getSize(t *testing.T) {
+	t.Parallel()
+	fs := newSimpleFS(100)
+	assert.Equal(t, uint(0), fs.getSize())
+
+	err := fs.addEntry(&file{
+		name: "foo",
+		size: 10,
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, uint(10), fs.getSize())
+	err = fs.addEntry(&dir{
+		name: "testdir",
+		entries: fsEntryMap{
+			"foo": &file{
+				name: "foo",
+				size: 1,
+			},
+			"bar": &file{
+				name: "foo",
+				size: 2,
+			},
+			"baz": &file{
+				name: "foo",
+				size: 3,
+			},
+		},
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, uint(16), fs.getSize())
+}
+
+func TestSimpleFS_RecommendDirectoryForDeletion(t *testing.T) {
+	t.Parallel()
+
+	var tests = []struct {
+		name     string
+		fs       simpleFS
+		required uint
+		expected *dir
+		err      bool
+	}{
+		{
+			"required space greater than capacity",
+			simpleFS{
+				entries:         fsEntryMap{"test": &dir{"test", fsEntryMap{}}},
+				currentLocation: []dirName{"test"},
+				capacity:        100,
+			},
+			1000,
+			nil,
+			true,
+		},
+		{
+			"no results",
+			simpleFS{
+				entries:         fsEntryMap{"test": &dir{"test", fsEntryMap{}}, "foo": &file{name: "foo", size: 99}},
+				currentLocation: []dirName{"test"},
+				capacity:        100,
+			},
+			99,
+			nil,
+			true,
+		},
+		{
+			"already enough space",
+			simpleFS{
+				entries:         fsEntryMap{"test": &dir{"test", fsEntryMap{}}, "foo": &file{name: "foo", size: 99}},
+				currentLocation: []dirName{"test"},
+				capacity:        100,
+			},
+			1,
+			nil,
+			true,
+		},
+		{
+			"gets smallest",
+			simpleFS{
+				entries: fsEntryMap{
+					"a": &dir{
+						name: "a",
+						entries: fsEntryMap{
+							"e": &dir{
+								"e",
+								fsEntryMap{
+									"i": &file{name: "i", size: 584},
+								},
+							},
+							"f":     &file{name: "f", size: 29116},
+							"g":     &file{name: "g", size: 2557},
+							"h.lst": &file{name: "h.lst", size: 62596},
+						},
+					},
+					"b.txt": &file{name: "b.txt", size: 14848514},
+					"c.dat": &file{name: "c.dat", size: 8504156},
+					"d": &dir{
+						name: "d",
+						entries: fsEntryMap{
+							"j":     &file{name: "j", size: 4060174},
+							"d.log": &file{name: "d.log", size: 8033020},
+							"d.ext": &file{name: "d.ext", size: 5626152},
+							"k":     &file{name: "k", size: 7214296},
+						},
+					},
+				},
+				currentLocation: []dirName{},
+				capacity:        70000000,
+			},
+			30000000,
+			&dir{
+				name: "d",
+				entries: fsEntryMap{
+					"j":     &file{name: "j", size: 4060174},
+					"d.log": &file{name: "d.log", size: 8033020},
+					"d.ext": &file{name: "d.ext", size: 5626152},
+					"k":     &file{name: "k", size: 7214296},
+				},
+			},
+			false,
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			dir, err := test.fs.RecommendDirectoryForDeletion(test.required)
+			if test.err {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+			assert.Equal(t, test.expected, dir)
+		})
+	}
 }

@@ -13,7 +13,9 @@ var input string
 func main() {
 	lines := strings.Split(input, "\n")
 
-	fs, err := day7.ParseInput(lines)
+	capacity := uint(70000000)
+
+	fs, err := day7.ParseInput(lines, capacity)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,5 +31,12 @@ func main() {
 	})
 
 	log.Printf("Total size: %d", total)
+
+	d, err := fs.RecommendDirectoryForDeletion(30000000)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Printf("Size of directory to delete: %d", d.GetSize())
 
 }

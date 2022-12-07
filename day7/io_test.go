@@ -9,115 +9,142 @@ func TestParseInput(t *testing.T) {
 	t.Parallel()
 
 	var tests = []struct {
-		name   string
-		input  []string
-		result *simpleFS
-		err    bool
+		name     string
+		input    []string
+		capacity uint
+		result   *simpleFS
+		err      bool
 	}{
 		{
-			name:  "empty",
-			input: []string{},
+			name:     "empty",
+			input:    []string{},
+			capacity: 100000,
 			result: &simpleFS{
+				capacity:        100000,
 				entries:         fsEntryMap{},
 				currentLocation: []dirName{},
 			},
 			err: false,
 		},
 		{
-			name:   "empty line",
-			input:  []string{"  "},
-			result: nil,
-			err:    true,
+			name:     "empty line",
+			input:    []string{"  "},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "unsupported command",
-			input:  []string{"$ cat"},
-			result: nil,
-			err:    true,
+			name:     "unsupported command",
+			input:    []string{"$ cat"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "bad cd",
-			input:  []string{"$ cd .."},
-			result: nil,
-			err:    true,
+			name:     "bad cd",
+			input:    []string{"$ cd .."},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "bad cd 2",
-			input:  []string{"$ cd foo"},
-			result: nil,
-			err:    true,
+			name:     "bad cd 2",
+			input:    []string{"$ cd foo"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:  "ls works",
-			input: []string{"$ ls"},
+			name:     "ls works",
+			input:    []string{"$ ls"},
+			capacity: 100000,
 			result: &simpleFS{
+				capacity:        100000,
 				entries:         fsEntryMap{},
 				currentLocation: []dirName{},
 			},
 			err: false,
 		},
 		{
-			name:   "must be in ls mode to ls",
-			input:  []string{"dir foo"},
-			result: nil,
-			err:    true,
+			name:     "must be in ls mode to ls",
+			input:    []string{"dir foo"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "cant have duplicates",
-			input:  []string{"$ ls", "dir foo", "123 foo"},
-			result: nil,
-			err:    true,
+			name:     "cant have duplicates",
+			input:    []string{"$ ls", "dir foo", "123 foo"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "junk",
-			input:  []string{"fdsdf"},
-			result: nil,
-			err:    true,
+			name:     "cant add over capacity",
+			input:    []string{"$ ls", "123 foo"},
+			capacity: 10,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "no cd",
-			input:  []string{"$ cd"},
-			result: nil,
-			err:    true,
+			name:     "junk",
+			input:    []string{"fdsdf"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "too many cd",
-			input:  []string{"$ cd test llll"},
-			result: nil,
-			err:    true,
+			name:     "no cd",
+			input:    []string{"$ cd"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "too many ls",
-			input:  []string{"$ ls lkjd"},
-			result: nil,
-			err:    true,
+			name:     "too many cd",
+			input:    []string{"$ cd test llll"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "ls mode reset on command",
-			input:  []string{"$ ls", "dir foo", "$ cd foo", "dir bar"},
-			result: nil,
-			err:    true,
+			name:     "too many ls",
+			input:    []string{"$ ls lkjd"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "invalid dir entry line",
-			input:  []string{"$ ls", "dir foo cat", "$ cd foo", "dir bar"},
-			result: nil,
-			err:    true,
+			name:     "ls mode reset on command",
+			input:    []string{"$ ls", "dir foo", "$ cd foo", "dir bar"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "invalid file entry line",
-			input:  []string{"$ ls", "123 foo cat", "$ cd foo", "dir bar"},
-			result: nil,
-			err:    true,
+			name:     "invalid dir entry line",
+			input:    []string{"$ ls", "dir foo cat", "$ cd foo", "dir bar"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name:   "invalid file entry size",
-			input:  []string{"$ ls", "ddd file"},
-			result: nil,
-			err:    true,
+			name:     "invalid file entry line",
+			input:    []string{"$ ls", "123 foo cat", "$ cd foo", "dir bar"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
 		},
 		{
-			name: "full example",
+			name:     "invalid file entry size",
+			input:    []string{"$ ls", "ddd file"},
+			capacity: 100000,
+			result:   nil,
+			err:      true,
+		},
+		{
+			name:     "full example",
+			capacity: 100000000,
 			input: []string{
 				"$ cd /",
 				"$ ls",
@@ -170,6 +197,7 @@ func TestParseInput(t *testing.T) {
 						},
 					},
 				},
+				capacity:        100000000,
 				currentLocation: []dirName{"d"},
 			},
 			err: false,
@@ -180,7 +208,7 @@ func TestParseInput(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			result, err := ParseInput(test.input)
+			result, err := ParseInput(test.input, test.capacity)
 			if test.err {
 				assert.Error(t, err)
 			} else {

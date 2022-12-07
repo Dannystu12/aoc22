@@ -23,12 +23,14 @@ func (fs fsEntryMap) traverse(fn func(key FsEntryKey, entry FsEntry)) {
 }
 
 type simpleFS struct {
+	capacity        uint
 	entries         fsEntryMap
 	currentLocation []dirName
 }
 
-func newSimpleFS() *simpleFS {
+func newSimpleFS(capacity uint) *simpleFS {
 	return &simpleFS{
+		capacity:        capacity,
 		entries:         make(fsEntryMap),
 		currentLocation: make([]dirName, 0),
 	}
@@ -71,8 +73,56 @@ func (fs *simpleFS) addEntry(entry FsEntry) error {
 		return fmt.Errorf("entry already exists: %s", entry.getName())
 	}
 
+	currentSpaceUsed := fs.getSize()
+	if entry.GetSize()+currentSpaceUsed > fs.capacity {
+		return fmt.Errorf("no space available for entry: %s", entry.getName())
+	}
+
 	entries[entry.getName().getKey()] = entry
 	return nil
+}
+
+func (fs *simpleFS) getSize() uint {
+	total := uint(0)
+	for _, entry := range fs.entries {
+		total += entry.GetSize()
+	}
+	return total
+}
+
+func (fs *simpleFS) RecommendDirectoryForDeletion(requiredSpace uint) (*dir, error) {
+
+	if requiredSpace > fs.capacity {
+		return nil, fmt.Errorf("required space is greater than capacity")
+	}
+
+	currentSpaceUsed := fs.getSize()
+	freeSpace := fs.capacity - currentSpaceUsed
+	if requiredSpace <= freeSpace {
+		return nil, fmt.Errorf("already have enough space")
+	}
+
+	requiredSpace = requiredSpace - freeSpace
+
+	var result *dir
+	resSize := uint(0)
+	fs.Traverse(func(key FsEntryKey, entry FsEntry) {
+		if entry.IsDir() {
+			entrySize := entry.GetSize()
+			if entrySize >= requiredSpace {
+				if result == nil || resSize > entrySize {
+					result = entry.(*dir)
+					resSize = entrySize
+				}
+			}
+		}
+	})
+
+	if result == nil {
+		return nil, fmt.Errorf("no directories found for deletion")
+	}
+	return result, nil
+
 }
 
 func (fs *simpleFS) cd(directoryName string) error {
