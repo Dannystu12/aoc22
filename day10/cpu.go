@@ -40,6 +40,13 @@ func (c *cpu) ProcessCommand(cmd command) {
 }
 
 func (c *cpu) GetSignalStrength(clockCycle int) (int, bool) {
+
+	value, ok := c.getValue(clockCycle)
+
+	return value * clockCycle, ok
+}
+
+func (c *cpu) getValue(clockCycle int) (int, bool) {
 	if clockCycle < 0 {
 		return 0, false
 	}
@@ -48,5 +55,5 @@ func (c *cpu) GetSignalStrength(clockCycle int) (int, bool) {
 		return 0, false
 	}
 
-	return c.xHistory[clockCycle-1] * clockCycle, true
+	return c.xHistory[clockCycle-1], true
 }

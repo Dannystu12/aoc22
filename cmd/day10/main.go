@@ -35,4 +35,11 @@ func main() {
 	}
 
 	log.Printf("Total signal strength: %d\n", total)
+
+	crt := day10.NewCRT()
+
+	result := crt.Draw(cpu)
+	log.Println("Par2 result:")
+	log.Print("\n" + strings.Replace(result, ".", " ", -1))
+
 }
