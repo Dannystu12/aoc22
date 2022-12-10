@@ -1,34 +1,34 @@
-.PHONY: test day1 day2 day3 day4 day5 day6 day7 day8 day9 day10
+.PHONY: test day01 day02 day03 day04 day05 day06 day07 day08 day09 day10
 
 test:
 	go test -coverprofile=cover.out -covermode=atomic ./...
 
-day1:
-	go run cmd/day1/*.go
+day01:
+	go run cmd/day01/*.go
 
-day2:
-	go run cmd/day2/*.go
+day02:
+	go run cmd/day02/*.go
 
-day3:
-	go run cmd/day3/*.go
+day03:
+	go run cmd/day03/*.go
 
-day4:
-	go run cmd/day4/*.go
+day04:
+	go run cmd/day04/*.go
 
-day5:
-	go run cmd/day5/*.go
+day05:
+	go run cmd/day05/*.go
 
-day6:
-	go run cmd/day6/*.go
+day06:
+	go run cmd/day06/*.go
 
-day7:
-	go run cmd/day7/*.go
+day07:
+	go run cmd/day07/*.go
 
-day8:
-	go run cmd/day8/*.go
+day08:
+	go run cmd/day08/*.go
 
-day9:
-	go run cmd/day9/*.go
+day09:
+	go run cmd/day09/*.go
 
 day10:
 	go run cmd/day10/*.go

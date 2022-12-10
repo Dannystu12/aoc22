@@ -10,6 +10,6 @@ To run the tests:
 
 To get the answers for a specific day run:
 
-`make dayX`
+`make dayXX`
 
-e.g. `make day1`
+e.g. `make day01`
